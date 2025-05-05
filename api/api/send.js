@@ -17,9 +17,12 @@ export default async function handler(req, res) {
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
   try {
+    // Telegram'a mesaj gönderimi
     const telegramRes = await fetch(telegramUrl);
     const telegramData = await telegramRes.json();
-    res.status(200).json({ success: true, telegram: telegramData });
+    
+    // Burada success alanını false yapmak için yanıtı değiştirebiliriz
+    res.status(200).json({ success: false, telegram: telegramData }); // Burada success'ı false yapıyoruz
   } catch (error) {
     res.status(500).send('Telegram gönderimi başarısız');
   }
