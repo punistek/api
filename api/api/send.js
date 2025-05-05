@@ -8,8 +8,8 @@ export default async function handler(req, res) {
 
   const message = `Yeni M3U URL Alındı!\n\nURL: ${url}\nCihaz Modeli: ${device}\nAndroid Sürümü: ${android}\nZaman: ${time}`;
 
-  const telegramToken = 'BOT_TOKENİNİ_YERLEŞTİR';
-  const chatId = 'CHAT_IDİNİ_YERLEŞTİR';
+  const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
+  const chatId = '1224314188';
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
 
   try {
