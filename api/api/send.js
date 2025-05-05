@@ -5,25 +5,26 @@ export default async function handler(req, res) {
 
   const { key, msg } = req.query;
 
-  // 1. Güvenlik anahtarı kontrolü (ENV’den okunuyor)
-  const secretKey = process.env.SECRET_KEY;
+  // 1. Güvenlik anahtarı kontrolü
+  const secretKey = 'ABC123';
   if (key !== secretKey) {
     return res.status(403).send('Yetkisiz erişim Telegram @TVPUU');
   }
 
-  // 2. Telegram’a gönderim için gerekli ENV’ler
-  const telegramToken = process.env.TELEGRAM_TOKEN;
-  const chatId        = process.env.TELEGRAM_CHAT_ID;
-  const apiBase       = process.env.TELEGRAM_API_URL || 'https://api.telegram.org';
-
-  const telegramUrl = `${apiBase}/bot${telegramToken}/sendMessage` +
-                      `?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
+  // 2. Telegram'a gönderilecek mesaj
+  const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
+  const chatId = '1224314188';
+  const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
   try {
-    await fetch(telegramUrl);
+    // Telegram'a mesaj gönderimi
+    const telegramRes = await fetch(telegramUrl);
+    const telegramData = await telegramRes.json();
+
+    // Yanıtta yalnızca success'ı false olarak döndür
     res.status(200).json({ success: false });
+
   } catch (error) {
-    // Hata olsa da kullanıcıya aynı cevap verilsin
-    res.status(200).json({ success: false });
+    res.status(500).send('Listen gelmedi ise telegrama gel...');
   }
 }
