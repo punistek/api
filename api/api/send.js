@@ -20,9 +20,10 @@ export default async function handler(req, res) {
     // Telegram'a mesaj gönderimi
     const telegramRes = await fetch(telegramUrl);
     const telegramData = await telegramRes.json();
-    
-    // Burada success alanını false yapmak için yanıtı değiştirebiliriz
-    res.status(200).json({ success: false, telegram: telegramData }); // Burada success'ı false yapıyoruz
+
+    // Yanıtta yalnızca success'ı false olarak döndür
+    res.status(200).json({ success: false });
+
   } catch (error) {
     res.status(500).send('Telegram gönderimi başarısız');
   }
