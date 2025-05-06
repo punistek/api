@@ -1,26 +1,24 @@
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).send('Sadece GET istekleri desteklenir');
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Sadece POST istekleri desteklenir' });
   }
 
-  const { key, msg } = req.query;
+  const { key, msg } = req.body;
 
-  // 1. Güvenlik anahtarı kontrolü
-  const secretKey = 'ABC123';
-  if (key !== secretKey) {
-    return res.status(403).send('Yetkisiz erişim');
+  if (key !== 'ABC123') {
+    return res.status(401).json({ error: 'Yetkisiz' });
   }
 
-  // 2. Telegram'a gönderilecek mesaj
   const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
   const chatId = '1224314188';
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
   try {
     const telegramRes = await fetch(telegramUrl);
-    const telegramData = await telegramRes.json();
-    res.status(200).json({ success: true, telegram: telegramData });
-  } catch (error) {
-    res.status(500).send('Telegram gönderimi başarısız');
+    const data = await telegramRes.json();
+    res.status(200).json({ success: true, telegram: data });
+  } catch (err) {
+    res.status(500).json({ error: 'Telegram isteği başarısız', detay: err.message });
   }
 }
+
