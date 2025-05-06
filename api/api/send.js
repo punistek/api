@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Sadece POST istekleri desteklenir' });
+    return res.status(405).json({ error: 'Bize ulaş Telegram : @puutv_admin_bot' });
   }
 
   const { key, msg } = req.body;
