@@ -19,6 +19,9 @@ export default async function handler(req, res) {
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+console.log("TOKEN:", telegramToken);
+console.log("CHAT ID:", chatId);
+return res.status(200).json({ token: telegramToken, chatId });
 
   try {
     const telegramRes = await fetch(telegramUrl);
