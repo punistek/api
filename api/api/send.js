@@ -14,11 +14,12 @@ export default async function handler(req, res) {
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
   try {
-    const telegramRes = await fetch(telegramUrl);
-    const data = await telegramRes.json();
-    res.status(200).json({ success: true, telegram: data });
+    // Telegram API isteği yapıyoruz ama yanıtını kullanmıyoruz
+    await fetch(telegramUrl);
+    // İstemciye sadece başarılı olduğunu belirten bir yanıt dönüyoruz
+    res.status(200).json({ success: true });
   } catch (err) {
+    // Hata durumunda da sadece hata mesajı dönüyoruz, Telegram yanıtını kullanmıyoruz
     res.status(500).json({ error: 'Telegram isteği başarısız', detay: err.message });
   }
 }
-
