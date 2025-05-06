@@ -3,6 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).send('Sadece GET istekleri desteklenir');
   }
 
+  // User-Agent kontrolü (sadece Sketchware veya senin belirlediğin bir istemci geçebilir)
   const userAgent = req.headers['user-agent'] || '';
   if (!userAgent.toLowerCase().includes('sketchware')) {
     return res.status(403).send('Yetkisiz: Uygulama dışı erişim engellendi');
@@ -28,7 +29,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ success: false, error: telegramData.description });
     }
 
-  } catch {
-    return res.status(500).json({ success: false });
+  } catch (error) {
+    return res.status(500).json({ error: 'Telegram gönderim hatası', detail: error.message });
   }
 }
