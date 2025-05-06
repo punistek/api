@@ -3,11 +3,6 @@ export default async function handler(req, res) {
     return res.status(405).send('Sadece GET istekleri desteklenir');
   }
 
-  const userAgent = req.headers['user-agent'] || '';
-  if (!userAgent.toLowerCase().includes('sketchware')) {
-    return res.status(403).send('Yetkisiz: Uygulama dışı erişim engellendi');
-  }
-
   const { msg } = req.query;
 
   if (!msg) {
