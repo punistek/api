@@ -1,34 +1,26 @@
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).send('Sadece GET istekleri desteklenir');
-  }
+  if (req.method !== 'GET') {
+    return res.status(405).send('Sadece GET istekleri desteklenir');
+  }
 
-  const { key, msg } = req.query;
+  const { key, msg } = req.query;
 
-  const secretKey = process.env.SECRET\_KEY;
-  if (key !== secretKey) {
-    return res.status(403).send('Yetkisiz erişim Telegram @TVPUU');
-  }
+  // 1. Güvenlik anahtarı kontrolü
+  const secretKey = 'ABC123';
+  if (key !== secretKey) {
+    return res.status(403).send('Yetkisiz erişim');
+  }
 
-  const telegramToken = process.env.TELEGRAM\_BOT\_TOKEN;
-  const chatId = process.env.TELEGRAM\_CHAT\_ID;
-  const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+  // 2. Telegram'a gönderilecek mesaj
+  const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
+  const chatId = '1224314188';
+  const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
-  try {
-    const telegramRes = await fetch(telegramUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat\_id: chatId,
-        text: msg,
-      }),
-    });
-
-    const telegramData = await telegramRes.json();
-    res.status(200).json({ success: telegramData.ok });
-  } catch (error) {
-    res.status(500).send('Listen gelmedi ise telegrama gel...');
-  }
+  try {
+    const telegramRes = await fetch(telegramUrl);
+    const telegramData = await telegramRes.json();
+    res.status(200).json({ success: true, telegram: telegramData });
+  } catch (error) {
+    res.status(500).send('Telegram gönderimi başarısız');
+  }
 }
