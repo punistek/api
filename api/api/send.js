@@ -8,9 +8,9 @@ export default async function handler(req, res) {
   if (key !== 'ABC123') {
     return res.status(401).json({ error: 'Yetkisiz' });
   }
-
-  const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
-  const chatId = '1224314188';
+  
+  const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
 
   try {
