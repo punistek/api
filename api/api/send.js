@@ -3,21 +3,19 @@ export default async function handler(req, res) {
     return res.status(405).send('Sadece GET istekleri desteklenir');
   }
 
-  // User-Agent kontrolü (sadece Sketchware izinli)
   const userAgent = req.headers['user-agent'] || '';
   if (!userAgent.toLowerCase().includes('sketchware')) {
     return res.status(403).send('Yetkisiz: Uygulama dışı erişim engellendi');
   }
 
   const { msg } = req.query;
+
   if (!msg) {
     return res.status(400).send('Mesaj eksik');
   }
 
-  // Ortam değişkenlerinden token ve chatId alınır
-  const telegramToken = process.env.TELEGRAM_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
+  const telegramToken = '7426497726:AAEPDzRSsXjAvTFpN_B7bteQj00a6wacSAg';
+  const chatId = '1224314188';
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
 
   try {
