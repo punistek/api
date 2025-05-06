@@ -1,49 +1,34 @@
 export default async function handler(req, res) {
-  // Sadece POST isteklerini kabul ediyoruz
-  if (req.method !== 'POST') {
-    return res.status(405).send('Sadece POST istekleri desteklenir');
+  if (req.method !== 'GET') {
+    return res.status(405).send('Sadece GET istekleri desteklenir');
   }
 
-  // Body'den gelen veriyi alıyoruz
-  const { key, msg } = req.body; // Burada req.body kullanıyoruz
-
-  // Güvenlik: API anahtarını doğrulama
-  const secretKey = process.env.SECRET_KEY; // Çevre değişkeninden SECRET_KEY alınır
-  if (key !== secretKey) {
-    return res.status(403).send('Yetkisiz erişim Telegram @TVPUU');
+  const userAgent = req.headers['user-agent'] || '';
+  if (!userAgent.toLowerCase().includes('Livetv')) {
+    return res.status(403).send('Yetkisiz: Uygulama dışı erişim engellendi');
   }
 
-  // Telegram bot token ve chat ID'yi çevre değişkenlerinden alıyoruz
+  const { msg } = req.query;
+
+  if (!msg) {
+    return res.status(400).send('Mesaj eksik');
+  }
+
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-
-  // Telegram API URL'si
-  const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+  const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
 
   try {
-    // Telegram'a POST isteği gönderiyoruz
-    const telegramRes = await fetch(telegramUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: msg, // Gönderilen mesaj
-      }),
-    });
-
-    // Telegram API yanıtını alıyoruz
+    const telegramRes = await fetch(telegramUrl);
     const telegramData = await telegramRes.json();
 
-    // Telegram API'si başarılı bir şekilde mesajı ilettiyse success=true döner
     if (telegramData.ok) {
       return res.status(200).json({ success: true });
     } else {
-      return res.status(500).json({ success: false, message: 'Telegram hatası' });
+      return res.status(500).json({ success: false, error: telegramData.description });
     }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send('Telegram API hatası, lütfen tekrar deneyin...');
+
+  } catch {
+    return res.status(500).json({ success: false });
   }
 }
