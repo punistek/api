@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { key, msg } = req.body;
 
-  if (key !== 'ABC123') {
+  if (key !== 'ATATURK) {
     return res.status(401).json({ error: 'Yetkisiz' });
   }
   
@@ -20,6 +20,6 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true });
   } catch (err) {
     // Hata durumunda da sadece hata mesajı dönüyoruz, Telegram yanıtını kullanmıyoruz
-    res.status(500).json({ error: 'Telegram isteği başarısız', detay: err.message });
+    res.status(500).json({ error: 'Bir Hata oluştu Daha sonra tekrar dene.', detay: err.message });
   }
 }
